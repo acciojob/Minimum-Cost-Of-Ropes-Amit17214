@@ -1,131 +1,53 @@
-// Function to find the minimum cost of connecting ropes
-function findMinimumCostRopes(arr) {
-  // Create a min heap
-  const minHeap = new MinHeap();
 
-  // Insert all ropes into the min heap
-  for (let i = 0; i < arr.length; i++) {
-    minHeap.insert(arr[i]);
+  //your code here
+	// Function to calculate the minimum cost of connecting ropes
+function calculateMinCost(ropeLengths) {
+  const ropeArray = ropeLengths.split(',').map((length) => parseInt(length.trim()));
+  
+  if (ropeArray.length < 2) {
+    return 0; // If there are less than 2 ropes, no cost is incurred.
   }
+  
+  // Sort the rope lengths in ascending order
+  ropeArray.sort((a, b) => a - b);
 
   let totalCost = 0;
 
-  // Merge the ropes until there is only one rope left in the heap
-  while (minHeap.size() > 1) {
-    // Extract the two smallest ropes
-    const rope1 = minHeap.extractMin();
-    const rope2 = minHeap.extractMin();
+  while (ropeArray.length > 1) {
+    // Take the two shortest ropes
+    const shortest1 = ropeArray.shift();
+    const shortest2 = ropeArray.shift();
 
-    // Calculate the cost of merging and add it to the total cost
-    const cost = rope1 + rope2;
+    // Calculate the cost of connecting them and add it to the total cost
+    const cost = shortest1 + shortest2;
     totalCost += cost;
 
-    // Insert the merged rope back into the heap
-    minHeap.insert(cost);
+    // Put the newly created rope back into the array
+    ropeArray.push(cost);
+
+    // Re-sort the array to maintain the order
+    ropeArray.sort((a, b) => a - b);
   }
 
   return totalCost;
 }
 
-// Priority queue (min heap) implementation
-class MinHeap {
-  constructor() {
-    this.heap = [];
-  }
-
-  insert(val) {
-    this.heap.push(val);
-    this.heapifyUp();
-  }
-
-  extractMin() {
-    if (this.isEmpty()) {
-      return null;
-    }
-
-    const min = this.heap[0];
-    const last = this.heap.pop();
-
-    if (!this.isEmpty()) {
-      this.heap[0] = last;
-      this.heapifyDown();
-    }
-
-    return min;
-  }
-
-  isEmpty() {
-    return this.heap.length === 0;
-  }
-
-  size() {
-    return this.heap.length;
-  }
-
-  heapifyUp() {
-    let currentIndex = this.heap.length - 1;
-    while (currentIndex > 0) {
-      const parentIndex = Math.floor((currentIndex - 1) / 2);
-      if (this.heap[currentIndex] < this.heap[parentIndex]) {
-        // Swap current element with its parent
-        [this.heap[currentIndex], this.heap[parentIndex]] = [
-          this.heap[parentIndex],
-          this.heap[currentIndex],
-        ];
-        currentIndex = parentIndex;
-      } else {
-        break;
-      }
-    }
-  }
-
-  heapifyDown() {
-    let currentIndex = 0;
-    const lastIndex = this.heap.length - 1;
-    while (true) {
-      const leftChildIndex = 2 * currentIndex + 1;
-      const rightChildIndex = 2 * currentIndex + 2;
-      let smallestIndex = currentIndex;
-
-      if (
-        leftChildIndex <= lastIndex &&
-        this.heap[leftChildIndex] < this.heap[smallestIndex]
-      ) {
-        smallestIndex = leftChildIndex;
-      }
-
-      if (
-        rightChildIndex <= lastIndex &&
-        this.heap[rightChildIndex] < this.heap[smallestIndex]
-      ) {
-        smallestIndex = rightChildIndex;
-      }
-
-      if (currentIndex === smallestIndex) {
-        break;
-      }
-
-      // Swap current element with the smallest child
-      [this.heap[currentIndex], this.heap[smallestIndex]] = [
-        this.heap[smallestIndex],
-        this.heap[currentIndex],
-      ];
-      currentIndex = smallestIndex;
-    }
-  }
-}
-
-// Get the input from the user
+// Get the input and result elements from the HTML
 const inputElement = document.querySelector('input[type="text"]');
 const resultElement = document.querySelector('#result');
 
-inputElement.addEventListener('change', () => {
-  const inputValues = inputElement.value
-    .split(',')
-    .map((value) => parseInt(value.trim(), 10));
-
-  const minimumCost = findMinimumCostRopes(inputValues);
-
+// Listen for form submission (or any other appropriate event)
+document.querySelector('form').addEventListener('submit', (event) => {
+  event.preventDefault(); // Prevent the form from submitting via traditional means
+  
+  const inputValues = inputElement.value;
+  const minimumCost = calculateMinCost(inputValues);
+  
   // Display the minimum cost in the result element
   resultElement.textContent = `Minimum Cost: ${minimumCost}`;
 });
+
+  
+  
+  
+}  
